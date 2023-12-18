@@ -1,30 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
+import { logIn } from "../redux/action/userAction";
 
 const Home = () => {
-  const [username, setUsername] = useState("");
+  const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
-  
-  const navigate = useNavigate();
 
-  const id = useSelector((state) => state.auth.id);
-  const pw = useSelector((state) => state.auth.password);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const id = useSelector((state) => state.auth.userId);
 
   useEffect(() => {
     console.log("Updated ID:", id);
-    console.log("Updated Password:", pw);
-  }, [id, pw]);
+  }, [id]);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (username === id && password === pw) {
-      navigate("/profile");
-    } else {
-      console.log("Incorrect username or password");
-    }
-  };
+    await dispatch(logIn({ userId, password }))
+    .then(() => {
+      navigate('/profile');
+      alert('로그인 성공');
+    })
+    .catch((error) => {
+      alert(`${error.message}`);
+    });
+};
 
   const goToSignUp = () => {
     navigate("/signUp");
@@ -44,14 +47,20 @@ const Home = () => {
         }}
       >
         <Form.Group className="mb-3" controlId="formBasicUsername">
-          <Form.Label style={{ marginBottom: "8px", display: "block", textAlign: "start" }}>
+          <Form.Label
+            style={{
+              marginBottom: "8px",
+              display: "block",
+              textAlign: "start",
+            }}
+          >
             Username
           </Form.Label>
           <Form.Control
             type="text"
             placeholder="Enter your username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
             style={{
               padding: "10px",
               fontSize: "16px",
@@ -63,7 +72,13 @@ const Home = () => {
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label style={{ marginBottom: "8px", display: "block", textAlign: "start" }}>
+          <Form.Label
+            style={{
+              marginBottom: "8px",
+              display: "block",
+              textAlign: "start",
+            }}
+          >
             Password
           </Form.Label>
           <Form.Control

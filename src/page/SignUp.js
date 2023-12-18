@@ -2,17 +2,17 @@ import React, { useState } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useDispatch} from 'react-redux';
-import { setUserData } from "../redux/reducer/authReducer";
+import { signUp } from "../redux/action/userAction";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [id, setId] = useState("");
+  const [userId, setUserId] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  
   const handleSignUp = (e) => {
     e.preventDefault();
 
@@ -21,9 +21,14 @@ const SignUp = () => {
       return;
     }
 
-    dispatch(setUserData({ username, id, password }));
-    navigate('/');
-    alert("회원가입 완료");
+    dispatch(signUp({ username, userId, password }))
+    .then(() => {
+      navigate('/');
+      alert("회원가입 완료");
+    })
+    .catch((error) => {
+      alert(`회원가입 실패: ${error.message}`);
+    });
   };
 
   const goBack = () => {
@@ -69,8 +74,8 @@ const SignUp = () => {
           <Form.Control
             type="text"
             placeholder="Enter your ID"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
             style={{
               padding: "10px",
               fontSize: "16px",

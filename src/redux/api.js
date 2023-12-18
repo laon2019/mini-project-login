@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "",
+    baseURL: "http://varen.iptime.org:8085",
     headers: {"Content-Type": "application/json"}
 })
 
